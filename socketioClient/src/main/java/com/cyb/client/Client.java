@@ -35,7 +35,8 @@ public class Client {
 	        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
 	            public void call(Object... args) {
 	                System.out.println("connect sucess!");
-	                socket.emit("getmsg", "aaa");//成功发送消息
+	                socket.emit("login", "aaa");//成功发送消息
+	                
 	            }
 	        }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
 	            public void call(Object... args) {
@@ -52,9 +53,14 @@ public class Client {
 	                socket.disconnect();
 	            }
 	        });
+	        socket.on("loginBack", new Emitter.Listener() {
+	            public void call(Object... args) {
+	                System.out.println("登录结果 "+args[0]);
+	            }
+	        });
 	        socket.on("pushpoint", new Emitter.Listener() {
 	            public void call(Object... args) {
-	                System.out.println("get data "+args.length);
+	                System.out.println("get data "+args[0]);
 	            }
 	        });
 	        socket.connect();

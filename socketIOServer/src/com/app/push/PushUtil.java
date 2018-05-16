@@ -25,6 +25,7 @@ public class PushUtil {
 			server = new SocketIOServer(config);
 			PushListener listener = new PushListener(server);
 			server.addEventListener("getmsg", Object.class, listener);
+			server.addEventListener("login",Object.class,new LoginListener(server));
 			server.addConnectListener(new ConnectListener() {
 				public void onConnect(SocketIOClient client) {
 					System.out.println("new sessionid=" + client.getSessionId());
@@ -34,6 +35,7 @@ public class PushUtil {
 			server.addDisconnectListener(new DisconnectListener() {
 				@Override
 				public void onDisconnect(SocketIOClient client) {
+					System.out.println("remove client "+client.getSessionId());
 					clients.remove(client);
 				}
 			});
@@ -47,8 +49,12 @@ public class PushUtil {
 	                String data = "{\"x\":" +random.nextInt(100)+ ",\"y\":" +random.nextInt(100)+ "}";  
 	                /*BASE64Encoder encoder = new BASE64Encoder();  
 	                data = encoder.encode(data.getBytes());  */
-	                System.out.println("push data...");
+	               if(clients.size()==0){
+	            	   System.out.println("没有客户端连接，无需发送数据...");
+	               }
+	                
 	                for(SocketIOClient client : clients) { 
+	                	System.out.println("发送坐标点给客户端 "+client.getSessionId());
 	                    client.sendEvent("pushpoint",data);  
 	                }  
 	            }  
